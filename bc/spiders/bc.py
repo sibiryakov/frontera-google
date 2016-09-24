@@ -1,20 +1,25 @@
 # -*- coding: utf-8 -*-
-from scrapy.exceptions import DontCloseSpider
+from scrapy.spider import Spider
+from scrapy.http import Request
+from scrapy.http.response.html import HtmlResponse
 from scrapy.linkextractors import LinkExtractor
-from scrapy.spiders import CrawlSpider, Rule
-from scrapy import signals
 
 
-class BCSpider(CrawlSpider):
+class BCSpider(Spider):
     name = 'bc'
-
-    rules = (
-       Rule(LinkExtractor(), follow=True),
-    )
 
     def __init__(self, *args, **kwargs):
         super(BCSpider, self).__init__(*args, **kwargs)
-        self._follow_links = True
+        self.le = LinkExtractor()
+
+    def parse(self, response):
+        if not isinstance(response, HtmlResponse):
+            return
+
+        for link in self.le.extract_links(response):
+            r = Request(url=link.url)
+            r.meta.update(link_text=link.text)
+            yield r
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):

@@ -15,6 +15,7 @@ MIDDLEWARES.extend([
 # Crawl frontier backend
 #--------------------------------------------------------
 QUEUE_HOSTNAME_PARTITIONING = True
+URL_FINGERPRINT_FUNCTION='frontera.utils.fingerprint.hostname_local_fingerprint'
 
 #MESSAGE_BUS='frontera.contrib.messagebus.kafkabus.MessageBus'
 #KAFKA_LOCATION = 'localhost:9092'
